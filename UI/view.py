@@ -1,11 +1,13 @@
+
 import flet as ft
 from UI.alert import AlertManager
 
 '''
     VIEW:
-    - Rappresenta l'interfaccia utente
-    - Riceve i dati dal MODELLO e li presenta senza modificarli
+- Rappresenta l'interfaccia utente
+- Riceve i dati dal MODELLO e li presenta senza modificarli
 '''
+
 
 class View:
     def __init__(self, page: ft.Page):
@@ -36,15 +38,23 @@ class View:
         self.txt_titolo = ft.Text(value="Biblioteche di Torino", size=38, weight=ft.FontWeight.BOLD)
 
         # --- Sezione 2: Filtraggio ---
-        # TODO
+        self.dd_biblioteca = ft.Dropdown(label="Biblioteca", width=400)
+        self.dd_genere = ft.Dropdown(label="Genere", width=300)
 
-        # Sezione 3: Libri
-        # TODO
+        # Creiamo una riga per affiancare i due menu a tendina orizzontalmente
+        row_dropdowns = ft.Row(
+            controls=[self.dd_biblioteca, self.dd_genere],
+            alignment=ft.MainAxisAlignment.CENTER
+        )
 
-        # --- Toggle Tema ---
+
+        self.btn_mostra = ft.Button(content="Mostra Libri", on_click=self.controller.handler_btn)
+        self.list_libri = ft.ListView(expand=1, spacing=10, padding=20)
+
+
         self.toggle_cambia_tema = ft.Switch(label="Tema scuro", value=True, on_change=self.cambia_tema)
 
-        # --- Layout della pagina ---
+
         self.page.add(
             self.toggle_cambia_tema,
 
@@ -53,13 +63,19 @@ class View:
             ft.Divider(),
 
             # Sezione 2: Filtraggio
-            # TODO
+            row_dropdowns,
 
             # Sezione 3: Libri
-            # TODO
+            self.btn_mostra,
+            self.list_libri
         )
 
         self.page.scroll = "adaptive"
+
+
+        if self.controller is not None:
+            self.controller.popola_dropdowns()
+
         self.page.update()
 
     def cambia_tema(self, e):
